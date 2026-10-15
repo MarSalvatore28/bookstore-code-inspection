@@ -33,11 +33,8 @@ def process_order(token, items, coupon=None, shipping="standard", log=[]):
                 total = total * 0.9
             elif coupon == "BLACKFRIDAY":
                 total = total * 0.5
-            elif coupon == "STAFF":
-                if auth.is_admin(token):
-                    total = total * 0.7
-                else:
-                    total = total * 0.7
+            elif coupon == "STAFF" and auth.is_admin(token):
+                total = total * 0.7
         if shipping == "express":
             total = total + 10
         elif shipping == "standard":
