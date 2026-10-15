@@ -56,4 +56,7 @@ def is_admin(token):
 
 def apply_discount_rule(rule, total):
     # rule comes from the admin panel, e.g. "total * 0.9"
-    return eval(rule)
+    parts = rule.replace(" ", "").split("*")
+    if len(parts) != 2 or parts[0] != "total":
+        raise ValueError("Unsupported discount rule: " + rule)
+    return total * float(parts[1])
