@@ -2,8 +2,6 @@
 import sqlite3
 
 DB_PATH = "bookstore.db"
-DB_USER = "admin"
-DB_PASSWORD = "admin123"
 
 
 def get_connection():

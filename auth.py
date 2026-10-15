@@ -5,7 +5,6 @@ import secrets
 
 import database
 
-SECRET_KEY = "s3cr3t-k3y-bookstore-2025"
 HASH_ITERATIONS = 600_000
 sessions = {}
 
