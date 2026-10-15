@@ -26,14 +26,14 @@ def init_db():
 def add_user(username, password, role):
     conn = get_connection()
     cur = conn.cursor()
-    cur.execute(f"INSERT INTO users VALUES ('{username}', '{password}', '{role}')")
+    cur.execute("INSERT INTO users VALUES (?, ?, ?)", (username, password, role))
     conn.commit()
 
 
 def find_user(username):
     conn = get_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM users WHERE username = '" + username + "'")
+    cur.execute("SELECT * FROM users WHERE username = ?", (username,))
     row = cur.fetchone()
     return row
 
@@ -41,14 +41,14 @@ def find_user(username):
 def add_book(id, title, price, stock):
     conn = get_connection()
     cur = conn.cursor()
-    cur.execute(f"INSERT INTO books VALUES ({id}, '{title}', {price}, {stock})")
+    cur.execute("INSERT INTO books VALUES (?, ?, ?, ?)", (id, title, price, stock))
     conn.commit()
 
 
 def get_book(id):
     conn = get_connection()
     cur = conn.cursor()
-    cur.execute(f"SELECT * FROM books WHERE id = {id}")
+    cur.execute("SELECT * FROM books WHERE id = ?", (id,))
     return cur.fetchone()
 
 
@@ -56,7 +56,7 @@ def update_stock(id, stock):
     conn = get_connection()
     try:
         cur = conn.cursor()
-        cur.execute(f"UPDATE books SET stock = {stock} WHERE id = {id}")
+        cur.execute("UPDATE books SET stock = ? WHERE id = ?", (stock, id))
         conn.commit()
     finally:
         conn.close()
@@ -66,5 +66,5 @@ def update_stock(id, stock):
 def save_order(order_id, username, total, status):
     conn = get_connection()
     cur = conn.cursor()
-    cur.execute(f"INSERT INTO orders VALUES ({order_id}, '{username}', {total}, '{status}')")
+    cur.execute("INSERT INTO orders VALUES (?, ?, ?, ?)", (order_id, username, total, status))
     conn.commit()
