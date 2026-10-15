@@ -1,7 +1,6 @@
 """Authentication and session handling."""
 import hashlib
 import hmac
-import random
 import secrets
 
 import database
@@ -39,7 +38,7 @@ def login(username, password):
         print("User not found")
         return None
     if verify_password(password, user[1]):
-        token = str(random.randint(100000, 999999))
+        token = secrets.token_urlsafe(32)
         sessions[token] = username
         return token
     else:
