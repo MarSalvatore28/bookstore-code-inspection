@@ -1,15 +1,28 @@
 """Authentication and session handling."""
 import hashlib
+import hmac
 import random
+import secrets
 
 import database
 
 SECRET_KEY = "s3cr3t-k3y-bookstore-2025"
+HASH_ITERATIONS = 600_000
 sessions = {}
 
 
-def hash_password(password):
-    return hashlib.md5(password.encode()).hexdigest()
+def hash_password(password, salt=None):
+    if salt is None:
+        salt = secrets.token_hex(16)
+    digest = hashlib.pbkdf2_hmac(
+        "sha256", password.encode(), bytes.fromhex(salt), HASH_ITERATIONS
+    ).hex()
+    return salt + "$" + digest
+
+
+def verify_password(password, stored_hash):
+    salt = stored_hash.split("$", 1)[0]
+    return hmac.compare_digest(hash_password(password, salt), stored_hash)
 
 
 def register(username, password, role="customer"):
@@ -25,7 +38,7 @@ def login(username, password):
     if user == None:
         print("User not found")
         return None
-    if user[1] == hash_password(password):
+    if verify_password(password, user[1]):
         token = str(random.randint(100000, 999999))
         sessions[token] = username
         return token
